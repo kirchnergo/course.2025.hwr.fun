@@ -1,0 +1,133 @@
+# Dokumenten-Klasse festlegen
+
+#+LATEX_CLASS: tuftebookx
+#+LATEX_CLASS_OPTIONS: [justified, a4paper, titlepage, captions=tableheading, nobib] 
+# notitlepage
+
+# Packages einbinden
+
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage[ngerman,english,greek]{babel}
+#+LATEX_HEADER: \usepackage[LGR,T1]{fontenc}
+
+#+LATEX_HEADER: \usepackage{atbegshi}
+#+LATEX_HEADER: \usepackage{footnote}
+#+LATEX_HEADER: \usepackage{minitoc}
+#+LATEX_HEADER: \usepackage{booktabs}
+#+LATEX_HEADER: \usepackage{longtable}
+#+LATEX_HEADER: \usepackage{lmodern}
+#+LATEX_HEADER: \usepackage{graphicx}
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \usepackage{url}
+#+LATEX_HEADER: \usepackage{fancyvrb}
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{array}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage{rotating}
+#+LATEX_HEADER: \usepackage{multicol}
+#+LATEX_HEADER: \usepackage{pdflscape}
+#+LATEX_HEADER: \usepackage{ctable}
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{anysize}
+#+LATEX_HEADER: \usepackage{supertabular}
+#+LATEX_HEADER: \usepackage{minted}
+#+LATEX_HEADER: \usepackage{gensymb}
+#+LATEX_HEADER: \usepackage{nicefrac}
+#+LATEX_HEADER: \usepackage{units}
+#+LATEX_HEADER: \usepackage{siunitx}
+#+LATEX_HEADER: \usepackage{marginfix}
+#+Latex_Header: \usepackage{hyphenat}
+#+LATEX_HEADER: \usepackage{breakurl}
+#+LATEX_HEADER: \usepackage{float}
+#+LATEX_HEADER: \usepackage{placeins}
+#+LATEX_HEADER: \usepackage{tabu}
+#+LATEX_HEADER: \usepackage{tabulary}
+#+LATEX_HEADER: \usepackage{tocloft}
+#+LATEX_HEADER: \usepackage{titlesec}
+#+LATEX_HEADER: \usepackage{upquote}
+#+LATEX_HEADER: \usepackage{pdfpages}
+#+LATEX_HEADER: \usepackage{tabulary}
+#+LATEX_HEADER: \usepackage{minted}
+
+# Seiteneinstellungen
+
+#+LATEX_HEADER: \newgeometry{left=0.12\paperwidth,top=1in,headsep=2\baselineskip,
+#+LATEX_HEADER:    textwidth=0.7\paperwidth,marginparsep=1ex,marginparwidth=0.1\paperwidth,
+#+LATEX_HEADER:    textheight=44\baselineskip,headheight=\baselineskip}
+
+# Farben
+
+#+LATEX_HEADER: \definecolor{darkblue}{rgb}{0,0,.5}
+#+LATEX_HEADER: \definecolor{darkgreen}{rgb}{0,.5,0}
+#+LATEX_HEADER: \definecolor{islamicgreen}{rgb}{0.0, 0.56, 0.0}
+#+LATEX_HEADER: \definecolor{darkred}{rgb}{0.5,0,0}
+#+LATEX_HEADER: \definecolor{mintedbg}{rgb}{0.95,0.95,0.95}
+#+LATEX_HEADER: \definecolor{arsenic}{rgb}{0.23, 0.27, 0.29}
+#+LATEX_HEADER: \definecolor{prussianblue}{rgb}{0.0, 0.19, 0.33}
+#+LATEX_HEADER: \definecolor{coolblack}{rgb}{0.0, 0.18, 0.39}
+#+LATEX_HEADER: \definecolor{cobalt}{rgb}{0.0, 0.28, 0.67}
+#+LATEX_HEADER: \definecolor{moonstoneblue}{rgb}{0.45, 0.66, 0.76}
+#+LATEX_HEADER:	\definecolor{aliceblue}{rgb}{0.94, 0.97, 1.0}
+
+# Formatierungen von Hyperlinks, Fußnoten, Überschriften
+
+#+LATEX_HEADER: \hypersetup{colorlinks=true, breaklinks=true, linkcolor=coolblack, anchorcolor=blue, citecolor=islamicgreen, filecolor=blue,  menucolor=blue,  urlcolor=violet}
+#+LATEX_HEADER: \renewcommand\thefootnote{\textcolor{darkred}{\arabic{footnote}}}
+#+LATEX_HEADER: \renewcommand{\theFancyVerbLine}{\sffamily\textcolor[rgb]{0.7,0.7,0.7}{\tiny\arabic{FancyVerbLine}}}
+#+LATEX_HEADER: \setcounter{secnumdepth}{2}
+#+LATEX_HEADER: \titleformat{\section}{\normalfont\Large\bfseries\color{black}} {\llap{\colorbox{coolblack}{\parbox{1.5cm}{\hfill\color{white}\thesection}}}}{1em}{}[]
+#+LATEX_HEADER: \titleformat{\subsection}{\normalfont\large\bfseries\color{black}} {\llap{\colorbox{aliceblue}{\parbox{1.5cm}{\hfill\color{coolblack}\thesubsection}}}}{1em}{}[]
+#+LATEX_HEADER: \titleformat{\paragraph}{\normalfont\large\bfseries\color{black}} {}{1em}{}[]
+#+LATEX_HEADER: \titleformat{\subparagraph}{\normalfont\large\bfseries\color{black}} {}{1em}{}[]
+
+# #+Latex_Header: \setlength{\parindent}{0pt}
+#+Latex_Header: \makeatletter
+#+Latex_Header: % Paragraph indentation and separation for normal text
+#+Latex_Header: \renewcommand{\@tufte@reset@par}{%
+#+Latex_Header:   \setlength{\RaggedRightParindent}{0.0pc}%
+#+Latex_Header:   \setlength{\JustifyingParindent}{0.0pc}%
+#+Latex_Header:   \setlength{\parindent}{0pc}%
+#+Latex_Header:   \setlength{\parskip}{6pt}%
+#+Latex_Header: }
+#+Latex_Header: \@tufte@reset@par
+#+Latex_Header: % Paragraph indentation and separation for marginal text
+#+Latex_Header: \renewcommand{\@tufte@margin@par}{%
+#+Latex_Header:   \setlength{\RaggedRightParindent}{0.0pc}%
+#+Latex_Header:   \setlength{\JustifyingParindent}{0.0pc}%
+#+Latex_Header:   \setlength{\parindent}{0.0pc}%
+#+Latex_Header:   \setlength{\parskip}{3pt}%
+#+Latex_Header: }
+#+Latex_Header: \makeatother
+
+#+BEGIN_SRC emacs-lisp :noweb no-export :exports results
+;; Nice code-blocks :cache no
+(setq org-latex-listings 'minted
+      org-latex-minted-options
+      '(("bgcolor" "mintedbg")
+        ("frame" "none")
+        ("framesep" "0pt")
+        ("mathescape" "true")
+        ("fontsize" "\\footnotesize")
+        ("breaklines" "true")
+       ; ("linenos" "true")
+       ; ("numbersep" "5pt")
+        ("tabsize" "2")
+        ("gobble" "0")))
+;; Tables not centered
+;; (setq org-latex-tables-centered nil)
+nil
+#+END_SRC
+#+RESULTS[a2cd80febc3dafd9fe52bf613aa7a2c1af9595ce]:
+
+#+begin_src emacs-lisp :noweb no-export :exports none :results silent
+(defun org-font-lock-ensure ()
+  (font-lock-fontify-buffer))
+nil
+#+end_src
+
+#+begin_src emacs-lisp :exports none :results silent
+(setq org-latex-image-default-width "")
+#+end_src

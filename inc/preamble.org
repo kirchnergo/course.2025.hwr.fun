@@ -1,0 +1,169 @@
+
+# #+LaTeX_CLASS: article
+# #+LaTeX_CLASS: tuftebook
+#+Latex_Class: tuftehandout
+#+LaTeX_CLASS_OPTIONS: [a4paper, titlepage]
+
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LATEX_HEADER: \usepackage{textcomp}
+
+# #+LATEX_HEADER: \usepackage[utf8]{inputenc}
+# #+LATEX_HEADER: \usepackage[ngerman]{babel}
+# #+LATEX_HEADER: \usepackage[T1]{fontenc}
+
+#+LATEX_HEADER: \usepackage{footnote}
+#+LATEX_HEADER: \usepackage{minitoc}
+#+LATEX_HEADER: \usepackage{booktabs}
+#+LATEX_HEADER: \usepackage{longtable}
+#+LATEX_HEADER: \usepackage{lmodern}
+#+LATEX_HEADER: \usepackage{graphicx}
+# #+LATEX_HEADER: \usepackage{hyperref}
+# #+LATEX_HEADER: \usepackage{bookmark}
+#+LATEX_HEADER: \usepackage{url}
+#+LATEX_HEADER: \usepackage{fancyvrb}
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+LATEX_HEADER: \usepackage{amsmath}
+#+LATEX_HEADER: \usepackage{amssymb}
+#+LATEX_HEADER: \usepackage{mathabx}
+#+LATEX_HEADER: \usepackage{mnsymbol}
+#+LATEX_HEADER: \usepackage{array}
+#+LATEX_HEADER: \usepackage{listings}
+#+LATEX_HEADER: \usepackage{rotating}
+#+LATEX_HEADER: \usepackage{multicol}
+#+LATEX_HEADER: \usepackage{pdflscape}
+#+LATEX_HEADER: \usepackage{ctable}
+#+LATEX_HEADER: \usepackage{parskip}
+#+LATEX_HEADER: \usepackage{anysize}
+#+LATEX_HEADER: \usepackage{supertabular}
+#+LATEX_HEADER: \usepackage{minted}
+# #+LATEX_HEADER: \usepackage{natbib}
+# #+LATEX_HEADER: \usepackage[style=verbose, autocite=footnote, backend=bibtex]{biblatex}
+# #+LaTeX_HEADER: \usemintedstyle{perldoc}
+# #+LaTeX_HEADER: \usepackage{gensymb}
+#+LaTeX_HEADER: \usepackage{nicefrac}
+#+LaTeX_HEADER: \usepackage{units}
+#+LaTeX_HEADER: \usepackage{marginfix}
+# #+LaTeX_HEADER: \usepackage{marginnote}
+#+LaTeX_HEADER: \usepackage{breakurl}
+#+LaTeX_HEADER: \usepackage{float}
+#+LaTeX_HEADER: \usepackage{placeins}
+#+LaTeX_HEADER: \usepackage{tabu}
+#+LaTeX_HEADER: \usepackage{tabulary}
+#+LaTeX_HEADER: \usepackage{tocloft}
+#+LATEX_HEADER: \usepackage{titlesec}
+#+LATEX_HEADER: \usepackage{titletoc}
+
+#+LATEX_HEADER: \usepackage{changepage}
+#+LATEX_HEADER: \usepackage{fancyhdr}
+#+LATEX_HEADER: \usepackage{bibentry}
+#+LATEX_HEADER: \usepackage{optparams}
+#+LATEX_HEADER: \usepackage{paralist}
+#+LATEX_HEADER: \usepackage{placeins}
+#+LATEX_HEADER: \usepackage{ragged2e}
+#+LATEX_HEADER: \usepackage{setspace}
+#+LATEX_HEADER: \usepackage{textcase}
+#+LATEX_HEADER: \usepackage{textcomp}
+#+LATEX_HEADER: \usepackage{xifthen}
+
+#+LATEX_HEADER: \usepackage{hyperref}
+#+Latex_Header: \usepackage{geometry}
+
+#+LATEX_HEADER: \newcommand{\sectionbreak}{\clearpage}
+
+#+LaTeX_HEADER: \makeatletter
+# Paragraph indentation and separation for normal text
+#+LaTeX_HEADER: \renewcommand{\@tufte@reset@par}{\setlength{\RaggedRightParindent}{0pt}\setlength{\JustifyingParindent}{0pt}\setlength{\parindent}{0pt}\setlength{\parskip}{0.5\baselineskip}}
+#+LaTeX_HEADER:\@tufte@reset@par
+# Paragraph indentation and separation for marginal text
+#+LaTeX_HEADER:\renewcommand{\@tufte@margin@par}{\setlength{\RaggedRightParindent}{0pt}\setlength{\JustifyingParindent}{0pt}\setlength{\parindent}{0pt}\setlength{\parskip}{0.5\baselineskip}}
+#+LaTeX_HEADER:\makeatother
+
+# #+LATEX_HEADER: \marginsize{3cm}{2cm}{1cm}{1cm}
+#+LATEX_HEADER: \geometry{left=20mm, textwidth=130mm, marginparsep=8mm, marginparwidth=40mm}
+
+#+LATEX_HEADER: \definecolor{darkblue}{rgb}{0,0,.5}
+#+LATEX_HEADER: \definecolor{darkgreen}{rgb}{0,.5,0}
+#+LATEX_HEADER: \definecolor{islamicgreen}{rgb}{0.0, 0.56, 0.0}
+#+LATEX_HEADER: \definecolor{darkred}{rgb}{0.5,0,0}
+#+LATEX_HEADER: \definecolor{mintedbg}{rgb}{0.95,0.95,0.95}
+
+#+LATEX_HEADER: \definecolor{arsenic}{rgb}{0.23, 0.27, 0.29}
+#+LATEX_HEADER: \definecolor{prussianblue}{rgb}{0.0, 0.19, 0.33}
+#+LATEX_HEADER: \definecolor{coolblack}{rgb}{0.0, 0.18, 0.39}
+#+LATEX_HEADER: \definecolor{cobalt}{rgb}{0.0, 0.28, 0.67}
+#+LATEX_HEADER: \definecolor{moonstoneblue}{rgb}{0.45, 0.66, 0.76}
+#+LATEX_HEADER:	\definecolor{aliceblue}{rgb}{0.94, 0.97, 1.0}
+
+#+LATEX_HEADER: \hypersetup{colorlinks=true, breaklinks=true, linkcolor=coolblack, anchorcolor=blue, citecolor=islamicgreen, filecolor=blue,  menucolor=blue,  urlcolor=violet, bookmarks=true, bookmarksopen=false, bookmarksdepth=3, bookmarksopenlevel=1, pagebackref=true, bookmarksnumbered=false, pdfstartview={Fit}, pdfpagelayout={SinglePage}}
+#+LATEX_HEADER: \renewcommand\thefootnote{\textcolor{darkred}{\arabic{footnote}}}
+#+LATEX_HEADER: \renewcommand{\theFancyVerbLine}{\sffamily\textcolor[rgb]{0.7,0.7,0.7}{\tiny\arabic{FancyVerbLine}}}
+
+#+LATEX_HEADER: \setcounter{secnumdepth}{1}
+# #+LATEX_HEADER: \titleformat{\section}{\rmfamily\LARGE\itshape\color{black}} {\llap{\colorbox{coolblack}{\parbox{1.5cm}{\hfill\color{white}\thesection}}}}{1em}{}[]
+# #+LATEX_HEADER: \titleformat{\subsection}{\normalfont\large\itshape\color{black}} {\llap{\colorbox{aliceblue}{\parbox{1.5cm}{\hfill\color{coolblack}\thesubsection}}}}{1em}{}[]
+
+#+LATEX_HEADER: \titleformat*{\section}{\LARGE\rmfamily\mdseries\itshape}
+#+Latex_Header: \renewcommand{\thesubsection}{\hspace*{-1.0em}} 
+
+# #+Latex_Header: \titlecontents{section} [0em] {\vspace{1.5\baselineskip}\LARGE\rmfamily\itshape} {\hspace*{0em}\llap{\parbox[t]{40pt}{\hfill\color{mycolor}\thecontentspage}\hspace*{10pt}}} {\thecontentspage} {\rmfamily\upshape\qquad}
+# #+Latex_Header: \titlecontents{section} [0em] {\vspace{0\baselineskip}\begin{fullwidth}\Large\rmfamily\itshape}    {\hspace*{2em}\contentslabel{2em}} {\hspace*{2em}} {\rmfamily\upshape\qquad\thecontentspage} [\end{fullwidth}]
+#+Latex_Header: \titlecontents{section} [0em] {\vspace{1\baselineskip}\Large\rmfamily\itshape}    {\hspace*{0em}} {\hspace*{0em}} {\rmfamily\itshape\qquad\thecontentspage} []
+#+Latex_Header: \renewcommand{\contentsname}{\LARGE\rmfamily\mdseries\itshape Contents\vspace{4\baselineskip}}
+
+# #+Begin_Src Latex
+# % subsection format
+# \titleformat{\subsection}%
+#  {\normalfont\large\itshape\color{blue}}% format applied to label+text
+#  {\llap{\colorbox{blue}{\parbox{1.5cm}{\hfill\color{white}\thesubsection}}}}% label
+#  {1em}% horizontal separation between label and title body
+#  {}% before the title body
+#  []% after the title body
+# #+end_src
+
+# #+Latex_Header: \makeatletter
+# #+Latex_Header: \newcommand{\subtitle}[1]{ \gdef\@subtitle{#1} \gdef\plainsubtitle{#1} \ifthenelse{\isundefined{\hypersetup}} {} {\hypersetup{pdftitle={\plaintitle: \plainsubtitle}}} }
+# #+Latex_Header: \renewcommand{\maketitlepage}{ \cleardoublepage { \begin{fullwidth} \setlength{\parindent}{0pt}  \fontsize{20}{24}\selectfont\textit{\plainauthor}\par \vspace{1.75in}\fontsize{48}{54}\selectfont{\plaintitle}\par   \vspace{0.25in}\fontsize{20}{24}\selectfont{\plainsubtitle}\par \vfill\fontsize{14}{14}\selectfont\textit{\plainpublisher}\par \end{fullwidth}  }  \thispagestyle{empty} \clearpage}
+# #+Latex_Header: \makeatother
+
+
+#+BEGIN_SRC emacs-lisp :noweb no-export :exports results
+;; Nice code-blocks :cache no
+(setq org-latex-listings 'minted
+      org-latex-minted-options
+      '(("bgcolor" "mintedbg")
+        ("frame" "none")
+        ("framesep" "0pt")
+        ("mathescape" "true")
+        ("fontsize" "\\footnotesize")
+       ; ("linenos" "true")
+       ; ("numbersep" "5pt")
+        ("gobble" "0")))
+;; Tables not centered
+;; (setq org-latex-tables-centered nil)
+nil
+#+END_SRC
+#+RESULTS[a2cd80febc3dafd9fe52bf613aa7a2c1af9595ce]:
+
+#+source: define-citep-link
+#+begin_src emacs-lisp :results silent
+(org-add-link-type
+   "citep" 'ebib
+   (lambda (path desc format)
+     (cond
+      ((eq format 'html)
+       (format "(<cite>%s</cite>)" path))
+      ((eq format 'latex)
+       (if (or (not desc) (equal 0 (search "citep:" desc)))
+             (format "\\citep{%s}" path)
+             (format "\\citep[%s]{%s}" desc path)
+)))))
+#+end_src
+
+#+begin_src emacs-lisp :results silent
+;(setq org-hide-emphasis-markers nil)
+;(setq word-wrap t)
+#+end_src
+
+

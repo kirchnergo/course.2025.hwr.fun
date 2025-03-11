@@ -1,0 +1,46 @@
+* Preamble 																											 :noexport:
+
+# #+LATEX_HEADER: \usepackage[utf8]{inputenc}
+# #+LATEX_HEADER: \usepackage[ngerman]{babel}
+# #+LATEX_HEADER: \usepackage[T1]{fontenc}
+
+#+LATEX_HEADER: \usepackage{fontspec}
+#+Latex_Header: \usepackage{polyglossia}
+#+Latex_Header: \setmainlanguage[babelshorthands=true]{german}
+
+#+LATEX_HEADER: \usepackage{hyperref}
+#+LATEX_HEADER: \usepackage{color}
+#+LATEX_HEADER: \usepackage{xcolor}
+#+Latex_Header: \usepackage[misc]{ifsym}
+
+#+LATEX_HEADER: \definecolor{darkblue}{rgb}{0,0,.5}
+#+LATEX_HEADER: \definecolor{darkgreen}{rgb}{0,.5,0}
+#+LATEX_HEADER: \definecolor{islamicgreen}{rgb}{0.0, 0.56, 0.0}
+#+LATEX_HEADER: \definecolor{darkred}{rgb}{0.5,0,0}
+#+LATEX_HEADER: \definecolor{mintedbg}{rgb}{0.95,0.95,0.95}
+
+#+LATEX_HEADER: \definecolor{arsenic}{rgb}{0.23, 0.27, 0.29}
+#+LATEX_HEADER: \definecolor{prussianblue}{rgb}{0.0, 0.19, 0.33}
+#+LATEX_HEADER: \definecolor{coolblack}{rgb}{0.0, 0.18, 0.39}
+
+#+LATEX_HEADER: \hypersetup{colorlinks=true, breaklinks=true, anchorcolor=blue,linkcolor=white, citecolor=islamicgreen, filecolor=darkred,  urlcolor=darkblue}
+
+#+LATEX_HEADER: \usepackage{booktabs}
+#+LATEX_HEADER: \usepackage{pgf}
+# #+LaTeX_HEADER: \usepackage{breakurl}
+#+LATEX_HEADER: \usepackage{minted}
+
+#+BEGIN_SRC emacs-lisp :noweb no-export :exports none :results silent
+;; Nice code-blocks
+(setq org-latex-listings 'minted
+      org-latex-minted-options
+      '(("bgcolor" "mintedbg")
+        ("frame" "none")
+        ("framesep" "0pt")
+        ("mathescape" "true")
+        ("fontsize" "\\scriptsize")
+        ("breaklines" "true")
+        ("linenos" "false")
+        ("numbersep" "5pt")
+        ("gobble" "0")))
+#+END_SRC
