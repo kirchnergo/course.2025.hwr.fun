@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>TreeBuildingBenchmark.Benchmarks-20250401-221842</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet=v0.12.1, OS=macOS 13.7.4 (22H420) [Darwin 22.6.0]
+Intel Core i7-7920HQ CPU 3.10GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
+.NET Core SDK=9.0.200
+  [Host]     : .NET Core 9.0.2 (CoreCLR 9.0.225.6610, CoreFX 9.0.225.6610), X64 RyuJIT DEBUG
+  DefaultJob : .NET Core 9.0.2 (CoreCLR 9.0.225.6610, CoreFX 9.0.225.6610), X64 RyuJIT
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method</th><th>Mean</th><th>Error</th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Gen 0</th><th>Gen 1</th><th>Gen 2</th><th>Allocated</th>
+</tr>
+</thead><tbody><tr><td>Baseline</td><td>6.308 &mu;s</td><td>0.1256 &mu;s</td><td>0.2328 &mu;s</td><td>1.00</td><td>0.00</td><td>3.3188</td><td>-</td><td>-</td><td>13.56 KB</td>
+</tr><tr><td>Mine</td><td>3.567 &mu;s</td><td>0.0703 &mu;s</td><td>0.1250 &mu;s</td><td>0.57</td><td>0.03</td><td>1.8196</td><td>-</td><td>-</td><td>7.45 KB</td>
+</tr></tbody></table>
+</body>
+</html>

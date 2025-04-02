@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp9</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+
+    <OutputType>Exe</OutputType>
+    <GenerateProgramFile>false</GenerateProgramFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="TreeBuildingTypes.fs" />
+    <Compile Include="TreeBuildingBaseline.fs" />
+    <Compile Include="TreeBuilding.fs" />
+    <Compile Include="TreeBuildingTest.fs" />
+    <Compile Include="Benchmark.fs" />
+    <Compile Include="Program.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Include="FsUnit.xUnit" Version="3.8.0" />
+  </ItemGroup>
+
+</Project>
