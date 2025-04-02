@@ -1,0 +1,542 @@
+#+TITLE: Funktionale Programmierung in F# (3)
+#+BEAMER_HEADER: \subtitle{Grundlagen \& Funktionales Design}
+
+#+AUTHOR: Göran Kirchner
+#+EMAIL: e_kirchnerg@doz.hwr-berlin.de
+#+DATE: 2025-04-02
+
+# #+BEAMER_HEADER: \institute[INST]{\href{http://www.rki.de/EN}{Robert Koch Institute}}
+# #+BEAMER_HEADER: \logo{\pgfputat{\pgfxy(-0.8,7.5)}{\pgfbox[center,base]{\includegraphics[width=1.6cm]{rki-logo}}}}
+
+#+OPTIONS: H:2 toc:nil ltoc:t \n:nil @:t ::t |:t ^:t *:t TeX:t LaTeX:t email:t pri:nil todo:nil stat:nil
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+LaTeX_CLASS_OPTIONS: [t]
+#+latex_header: \mode<beamer>{\usetheme{Amsterdam}}
+#+latex_header: \mode<beamer>{\usecolortheme{rose}}
+# #+BEAMER_THEME: Amsterdam
+
+# #+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+
+#+Include: "../inc/preamble-talk.org"
+
+#+LATEX_HEADER: \RequirePackage{fancyvrb}
+#+LATEX_HEADER: \DefineVerbatimEnvironment{verbatim}{Verbatim}{fontsize=\scriptsize}
+
+#+PROPERTY: header-args:fsharp :tangle ../src/3/00_slides.fsx
+
+* Ziel [1/1]
+
+** DONE Programm
+CLOSED: [2025-04-01 Tue 22:01]
+
+- Hausaufgaben (5..8/10)
+  - [X] Queen Attack
+  - [X] RaindropsO
+  - [X] Gigaseconds
+  - [X] Bank Account
+- Vertiefung Railway-Oriented Programming
+- Prinzipien des funktionalen Designs
+- Refactoring (Übung)
+
+* Hausaufgaben [6/6]
+** DONE Queen Attack
+CLOSED: [2025-04-01 Tue 22:01]
+
+#+begin_src fsharp :results value :exports both
+open System
+let create (row, col) = row >= 0 && row < 8 && col >= 0 && col < 8
+let canAttack (queen1: int * int) (queen2: int * int) = 
+    let (r1, c1) = queen1
+    let (r2, c2) = queen2
+    Math.Abs(r1 - r2) = Math.Abs(c1 - c2) || r1 = r2 || c1 = c2
+let whiteQueen1, blackQueen1 = (2, 2), (1, 1)
+let test1 = canAttack blackQueen1 whiteQueen1
+let whiteQueen2, blackQueen2 = (2, 4), (6, 6)
+let test2 = canAttack blackQueen2 whiteQueen2
+#+end_src
+
+#+RESULTS:
+: val create: row: int * col: int -> bool
+: val canAttack: int * int -> int * int -> bool
+: val whiteQueen1: int * int = (2, 2)
+: val blackQueen1: int * int = (1, 1)
+: val test1: bool = true
+: val whiteQueen2: int * int = (2, 4)
+: val blackQueen2: int * int = (6, 6)
+: val test2: bool = false
+
+** DONE Raindrops
+CLOSED: [2025-04-01 Tue 22:01]
+
+#+begin_src fsharp :results value :exports both
+let rules =
+    [ 3, "Pling"
+      5, "Plang"
+      7, "Plong" ]
+let convert (number: int): string =
+    let divBy n d = n % d = 0
+    rules
+    |> List.filter (fst >> divBy number)
+    |> List.map snd
+    |> String.concat ""
+    |> function
+       | "" -> string number
+       | s -> s
+let test = convert 105
+#+end_src
+
+#+RESULTS:
+: val rules: (int * string) list = [(3, "Pling"); (5, "Plang"); (7, "Plong")]
+: val convert: number: int -> string
+: val test: string = "PlingPlangPlong"
+
+** DONE Gigasecond
+CLOSED: [2025-04-01 Tue 22:01]
+
+#+begin_src fsharp :results value :exports both
+let add (beginDate : System.DateTime) = beginDate.AddSeconds 1e9
+let test = add (DateTime(2015, 1, 24, 22, 0, 0)) = (DateTime(2046, 10, 2, 23, 46, 40))
+#+end_src
+
+#+RESULTS:
+: val add: beginDate: DateTime -> DateTime
+: val test: bool = true
+
+** DONE Bank Account (1)
+CLOSED: [2025-04-01 Tue 22:09]
+
+#+begin_src fsharp :results value :exports both
+type OpenAccount =
+    { mutable Balance: decimal }
+type Account =
+    | Closed
+    | Open of OpenAccount
+let mkBankAccount() = Closed
+let openAccount account =
+    match account with
+    | Closed -> Open { Balance = 0.0m }
+    | Open _ -> failwith "Account is already open"
+#+end_src
+
+#+RESULTS:
+: type OpenAccount =
+:   { mutable Balance: decimal }
+: type Account =
+:   | Closed
+:   | Open of OpenAccount
+: val mkBankAccount: unit -> Account
+: val openAccount: account: Account -> Account
+
+** DONE Bank Account (2)
+CLOSED: [2025-04-01 Tue 22:09]
+
+#+begin_src fsharp :results output :exports code
+let closeAccount account =
+    match account with
+    | Open _ -> Closed
+    | Closed -> failwith "Account is already closed"
+let getBalance account =
+    match account with
+    | Open openAccount -> Some openAccount.Balance
+    | Closed -> None
+let updateBalance change account =
+    match account with
+    | Open openAccount ->
+        lock (openAccount) (fun _ ->
+            openAccount.Balance <- openAccount.Balance + change
+            Open openAccount)
+    | Closed -> failwith "Account is closed"
+#+end_src
+
+#+RESULTS:
+
+** DONE Bank Account (3)
+CLOSED: [2025-04-01 Tue 22:09]
+
+#+begin_src fsharp :results output :exports both
+let account = mkBankAccount() |> openAccount
+let updateAccountAsync =        
+    async { account |> updateBalance 1.0m |> ignore }
+let ``updated from multiple threads`` =
+    updateAccountAsync
+        |> List.replicate 1000
+        |> Async.Parallel 
+        |> Async.RunSynchronously
+        |> ignore
+let test1 = getBalance account = (Some 1000.0m)
+#+end_src
+
+#+RESULTS:
+: val account: Account = Open { Balance = 1000.0M }
+: val updateAccountAsync: Async<unit>
+
+* Railway-Oriented Programming (Wdh.) [4/4]
+
+** DONE Übung 1
+CLOSED: [2025-04-01 Tue 22:01]
+
+- Implementiere einen Workflow (=validateInput=).
+  
+#+begin_src fsharp :results value :exports code :eval yes
+type Input = {Name : string; Email : string }
+let checkNameNotBlank input =
+  if input.Name = "" then
+     Error "Name must not be blank"
+  else Ok input
+let checkName50 input =
+  if input.Name.Length > 50 then
+     Error "Name must not be longer than 50 chars"
+  else Ok input
+let checkEmailNotBlank input =
+  if input.Email = "" then
+     Error "Email must not be blank"
+  else Ok input
+#+end_src
+
+#+RESULTS:
+: type Input =
+:   {
+:     Name: string
+:     Email: string
+:   }
+: val checkNameNotBlank: input: Input -> Result<Input,string>
+: val checkName50: input: Input -> Result<Input,string>
+: val checkEmailNotBlank: input: Input -> Result<Input,string>
+
+** DONE Übung 1 (Lösung)
+CLOSED: [2025-04-01 Tue 22:01]
+
+#+begin_src fsharp :results value :exports code :eval yes
+let validateInput input =
+    input
+    |> checkNameNotBlank
+    |> Result.bind checkName50
+    |> Result.bind checkEmailNotBlank
+
+let goodInput = {Name="Max"; Email="x@example.com"}
+let blankName = {Name=""; Email="x@example.com"}
+let blankEmail = {Name="Nora"; Email=""}
+[validateInput goodInput; validateInput blankName; validateInput blankEmail]
+#+end_src
+
+#+RESULTS:
+#+begin_example
+val validateInput: input: Input -> Result<Input,string>
+val goodInput: Input = { Name = "Max"
+                         Email = "x@example.com" }
+val blankName: Input = { Name = ""
+                         Email = "x@example.com" }
+val blankEmail: Input = { Name = "Nora"
+                          Email = "" }
+val it: Result<Input,string> list =
+  [Ok { Name = "Max"
+        Email = "x@example.com" }; Error "Name must not be blank";
+   Error "Email must not be blank"]
+#+end_example
+
+** DONE Übung 2
+CLOSED: [2025-04-01 Tue 22:01]
+
+- Definiere einen /Custom Error Type/. Benutze diesen in den Validierungen.
+- Übersetze die Fehlermeldungen (EN, FR, DE?).
+  
+#+begin_src fsharp :exports code :eval no
+type ErrorMessage =
+  | ??   // name not blank
+  | ?? of int  // name not longer than
+  | ??   // email not longer than
+let translateError_EN err =
+  match err with
+  | ?? -> "Name must not be blank"
+  | ?? i -> sprintf "Name must not be longer than %i chars" i
+  | ?? -> "Email must not be blank"
+  | SmtpServerError msg -> sprintf "SmtpServerError [%s]" msg
+#+end_src
+
+** DONE Übung 2 (Lösung)
+CLOSED: [2025-04-01 Tue 22:02]
+
+#+begin_src fsharp :exports code :eval no
+type ErrorMessage =
+    | NameMustNotBeBlank
+    | NameMustNotBeLongerThan of int
+    | EmailMustNotBeBlank
+    | SmtpServerError of string
+let translateError_FR err =
+    match err with
+    | NameMustNotBeBlank -> "Nom ne doit pas être vide"
+    | NameMustNotBeLongerThan i -> sprintf "Nom ne doit pas être plus long que %i caractères" i
+    | EmailMustNotBeBlank -> "Email doit pas être vide"
+    | SmtpServerError msg -> sprintf "SmtpServerError [%s]" msg
+#+end_src
+
+* Prinzipien des Funktionalen Designs [8/8]
+** DONE Funktionales Design
+CLOSED: [2025-04-01 Tue 22:02]
+
+$\leadsto$ [[./3.1 Functional Design Patterns.pdf][Functional Design Patterns]]
+
+\null\hfill--Scott Wlashin: [[https://fsharpforfunandprofit.com/rop/][F# for Fun and Profit]]
+
+** DONE Prinzipien (1)
+CLOSED: [2025-04-01 Tue 22:02]
+
+- Funktionen sind Daten!
+- überall Verkettung (Composition)
+- überall Funktionen
+- Typen sind keine Klassen
+- Typen kann man ebenfalls verknüpfen (algebraische Datentypen)
+- Typsignaturen lügen nicht!
+- statische Typen zur Modellierung der Domäne (später mehr;)
+
+** DONE Prinzipien (2)
+CLOSED: [2025-04-01 Tue 22:02]
+
+- Parametrisiere alles!
+- Typsignaturen sind "Interfaces"
+- Partielle Anwendung ist "Dependency Injection"
+- Monaden entsprechen dem "Chaining of Continuations"
+  - bind für Options
+  - bind für Fehler
+  - bind für Tasks
+- "map" - Funktionen
+  - Nutze "map" - Funktion von generische Typen!
+  - wenn man einen generischen Typ definiert, dann auch eine "map" - Funktion 
+
+** DONE Übung 3
+CLOSED: [2025-04-01 Tue 22:02]
+
+- Typsignaturen
+- Funktionen sind Daten
+
+** DONE Übung 4 (Think of a Number)
+CLOSED: [2025-04-01 Tue 22:02]
+
+#+begin_src fsharp :exports code :eval no
+let thinkOfANumber numberYouThoughtOf =
+    let addOne x = x + 1
+    let squareIt x = ??
+    let subtractOne x = ??
+    let divideByTheNumberYouFirstThoughtOf x = ??
+    let subtractTheNumberYouFirstThoughtOf x = ??
+
+    // define these functions
+    // then combine them using piping
+
+    numberYouThoughtOf
+    |> ??
+    |> ??
+    |> ??
+#+end_src
+
+** DONE Übung 4 (Lösung)
+CLOSED: [2025-04-01 Tue 22:02]
+
+#+begin_src fsharp :exports both :eval yes
+let thinkOfANumber numberYouThoughtOf =
+    let addOne x = x + 1
+    let squareIt x = x * x
+    let subtractOne x = x - 1
+    let divideByTheNumberYouFirstThoughtOf x = x / numberYouThoughtOf
+    let subtractTheNumberYouFirstThoughtOf x = x - numberYouThoughtOf
+    numberYouThoughtOf
+    |> addOne
+    |> squareIt
+    |> subtractOne
+    |> divideByTheNumberYouFirstThoughtOf
+    |> subtractTheNumberYouFirstThoughtOf
+thinkOfANumber 42
+#+end_src
+
+#+RESULTS:
+: val thinkOfANumber: numberYouThoughtOf: int -> int
+: val it: int = 2
+
+** DONE Übung 5 (Decorator)
+CLOSED: [2025-04-01 Tue 22:02]
+
+- Implementiere das [[https://de.wikipedia.org/wiki/Decorator][Decorator-Emtwurfsmuster]] für =add1=.
+  
+** DONE Pause
+CLOSED: [2025-04-01 Tue 22:02]
+*** 
+    :PROPERTIES:
+    :BEAMER_env: block
+    :END:
+
+If we’d asked the customers what they wanted, they would have said “faster horses”.
+
+\null\hfill -- Henry Ford
+
+* Refactoring [5/5]
+** DONE Tree Building (Übung)
+CLOSED: [2025-04-01 Tue 22:02]
+
+#+begin_src shell :exports code :eval no
+exercism download --exercise=tree-building --track=fsharp
+#+end_src
+
+** DONE Tree Building (Imperativ)
+CLOSED: [2025-04-01 Tue 22:02]
+
+#+begin_src fsharp :exports code :eval no
+let buildTree records =
+    let records' = List.sortBy (fun x -> x.RecordId) records
+    if List.isEmpty records' then failwith "Empty input"
+    else
+        let root = records'.[0]
+        if (root.ParentId = 0 |> not) then
+            failwith "Root node is invalid"
+        else
+            if (root.RecordId = 0 |> not) then failwith "Root node is invalid"
+            else
+                let mutable prev = -1
+                let mutable leafs = []
+                for r in records' do
+                    if (r.RecordId <> 0 && (r.ParentId > r.RecordId || r.ParentId = r.RecordId)) then
+                        failwith "Nodes with invalid parents"
+                    else
+                        if r.RecordId <> prev + 1 then
+                            failwith "Non-continuous list"
+                        else
+                            prev <- r.RecordId
+                            if (r.RecordId = 0) then
+                                leafs <- leafs @ [(-1, r.RecordId)]
+                            else
+                                leafs <- leafs @ [(r.ParentId, r.RecordId)]
+#+end_src
+
+** DONE Tree Building (Funktional)
+CLOSED: [2025-04-01 Tue 22:02]
+
+#+begin_src fsharp :exports code :eval no
+let buildTree records = 
+    records
+    |> List.sortBy (fun r -> r.RecordId)
+    |> validate
+    |> List.tail
+    |> List.groupBy (fun r -> r.ParentId)
+    |> Map.ofList
+    |> makeTree 0
+
+let rec makeTree id map =
+    match map |> Map.tryFind id with
+    | None -> Leaf id
+    | Some list -> Branch (id, 
+        list |> List.map (fun r -> makeTree r.RecordId map))
+#+end_src
+
+** DONE Tree Building (Error Handling)
+CLOSED: [2025-04-01 Tue 22:02]
+
+#+begin_src fsharp :exports code :eval no
+let validate records =
+    match records with
+    | [] -> failwith "Input must be non-empty"
+    | x :: _ when x.RecordId <> 0 -> 
+        failwith "Root must have id 0"
+    | x :: _ when x.ParentId <> 0 -> 
+        failwith "Root node must have parent id 0"
+    | _ :: xs when xs |> List.exists (fun r -> r.RecordId < r.ParentId) -> 
+        failwith "ParentId should be less than RecordId"
+    | _ :: xs when xs |> List.exists (fun r -> r.RecordId = r.ParentId) -> 
+        failwith "ParentId cannot be the RecordId except for the root node."
+    | rs when (rs |> List.map (fun r -> r.RecordId) |> List.max) > (List.length rs - 1) -> 
+        failwith "Ids must be continuous"
+    | _ -> records
+#+end_src
+
+** DONE Tree Building (Benchmarking)
+CLOSED: [2025-04-01 Tue 22:02]
+
+- [[https://github.com/dotnet/BenchmarkDotNet][BenchmarkDotNet]]
+  
+#+begin_src shell :eval no
+dotnet run -c release
+#+end_src
+
+#+Name: benchmarks
+#+Header: :var benchmarks="../src/3/03-tree-building/BenchmarkDotNet.Artifacts/TreeBuildingBenchmark.Benchmarks-20250401-221830.log"
+#+begin_src shell :results output drawer replace :exports both
+sed -n 381,391p $benchmarks
+#+end_src
+
+#+Latex:\tiny
+#+RESULTS: benchmarks
+:results:
+BenchmarkDotNet=v0.12.1, OS=macOS 13.7.4 (22H420) [Darwin 22.6.0]
+Intel Core i7-7920HQ CPU 3.10GHz (Kaby Lake), 1 CPU, 8 logical and 4 physical cores
+.NET Core SDK=9.0.200
+  [Host]     : .NET Core 9.0.2 (CoreCLR 9.0.225.6610, CoreFX 9.0.225.6610), X64 RyuJIT DEBUG
+  DefaultJob : .NET Core 9.0.2 (CoreCLR 9.0.225.6610, CoreFX 9.0.225.6610), X64 RyuJIT
+
+
+|   Method |     Mean |     Error |    StdDev | Ratio | RatioSD |  Gen 0 | Gen 1 | Gen 2 | Allocated |
+|--------- |---------:|----------:|----------:|------:|--------:|-------:|------:|------:|----------:|
+| Baseline | 6.308 μs | 0.1256 μs | 0.2328 μs |  1.00 |    0.00 | 3.3188 |     - |     - |  13.56 KB |
+|     Mine | 3.567 μs | 0.0703 μs | 0.1250 μs |  0.57 |    0.03 | 1.8196 |     - |     - |   7.45 KB |
+:end:
+
+
+
+
+* Ende [4/4]
+** DONE Zusammenfassung
+CLOSED: [2025-04-01 Tue 22:02]
+
+- funktionaler Umgang mit Fehlern (ROP)
+- funktionales Design
+- funktionales Refactoring
+
+** DONE Links
+CLOSED: [2025-04-01 Tue 22:02]
+
+- [[https://www.oodesign.com/][oodesign.com]]
+- [[https://fsharp.org/][fsharp.org]]
+- [[https://docs.microsoft.com/de-de/dotnet/fsharp/][docs.microsoft.com/../dotnet/fsharp]]
+- [[https://sergeytihon.com/][F# weekly]]
+- [[https://fsharpforfunandprofit.com/][fsharpforfunandprofit.com]]
+- [[https://github.com/fsprojects/awesome-fsharp][github.com/../awesome-fsharp]]
+
+** DONE Hausaufgabe  (Erinnerung)
+CLOSED: [2025-04-01 Tue 22:05]
+
+- exercism.io (bis 07.04)
+  - [ ] Accumulate
+  - [ ] Space Age
+- exercism.io (bis 07.04)
+  - [ ] Poker (Programmieraufgabe)
+
+** DONE Termine
+CLOSED: [2025-03-24 Mon 19:18]
+
+- [X] 12.03 11:30 - 15:45
+- [X] 26.03 11:30 - 15:45 (online)
+- [X] 02.04  8:45 - 11:45 (online)
+- [ ] 04.04 13:00 - 17:15 (online?!)
+- [ ] 09.04 11:30 - 15:45
+    
+
+* Sample                                                           :noexport:
+ 
+** Frame 1
+
+*** Thanks to Eric Fraga :B_block:BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:BEAMER_ENV: block
+:END:
+
+for the first viable Beamer setup in Org
+
+*** Thanks to everyone else :B_block:BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:BEAMER_ACT: <2->
+:BEAMER_ENV: block
+:END:
+
+for contributing to the discussion
+
