@@ -1,0 +1,361 @@
+#+TITLE: Funktionale Programmierung in F# (4)
+#+BEAMER_HEADER: \subtitle{Domain Driven Design \& Property Based Testing}
+
+#+AUTHOR: Göran Kirchner
+#+EMAIL: e_kirchnerg@doz.hwr-berlin.de
+#+DATE: 2025-04-04
+
+# #+BEAMER_HEADER: \institute[INST]{\href{http://www.rki.de/EN}{Robert Koch Institute}}
+# #+BEAMER_HEADER: \logo{\pgfputat{\pgfxy(-0.8,7.5)}{\pgfbox[center,base]{\includegraphics[width=1.6cm]{rki-logo}}}}
+
+#+OPTIONS: H:2 toc:nil ltoc:t \n:nil @:t ::t |:t ^:t *:t TeX:t LaTeX:t email:t pri:nil todo:nil stat:nil
+
+#+LATEX_CLASS: beamer
+#+LATEX_CLASS_OPTIONS: [presentation]
+#+LaTeX_CLASS_OPTIONS: [t]
+#+latex_header: \mode<beamer>{\usetheme{Amsterdam}}
+#+latex_header: \mode<beamer>{\usecolortheme{rose}}
+# #+BEAMER_THEME: Amsterdam
+
+# #+COLUMNS: %45ITEM %10BEAMER_ENV(Env) %10BEAMER_ACT(Act) %4BEAMER_COL(Col) %8BEAMER_OPT(Opt)
+
+#+Include: "../inc/preamble-talk.org"
+
+#+LATEX_HEADER: \RequirePackage{fancyvrb}
+#+LATEX_HEADER: \DefineVerbatimEnvironment{verbatim}{Verbatim}{fontsize=\scriptsize}
+
+#+PROPERTY: header-args:fsharp :tangle ../src/4/00_slides.fsx
+
+* Ziel [1/1]
+** DONE Programm
+CLOSED: [2025-04-02 Wed 14:29]
+
+- Domain Driven Design (DDD)
+- Property Based Testing
+
+* DDD (Domain Driven Design) [8/8]
+** DONE DDD
+CLOSED: [2025-04-02 Wed 14:29]
+
+$\leadsto$ [[./4.1 Dmmf.pdf][Domain Driven Design]]
+
+\null\hfill--Scott Wlashin: [[https://fsharpforfunandprofit.com/series/designing-with-types/][F# for Fun and Profit]]
+
+
+** DONE Prinzipien
+CLOSED: [2025-04-02 Wed 14:29]
+
+- Verwende die Sprache der Domäne (ubiquitous Language)
+- Values und Entities
+- der Code ist das Design (kein UML nötig)
+- Design mit (algebraischen) Typen
+  - Option statt Null
+  - DU statt Vererbung
+- illegale Konstellationen sollten nicht repräsentierbar sein!
+
+** DONE Pause
+CLOSED: [2025-04-02 Wed 14:29]
+*** 
+    :PROPERTIES:
+    :BEAMER_env: block
+    :END:
+
+Are you quite sure that all those bells and whistles, all those wonderful facilities of your so called powerful programming languages, belong to the solution set rather than the problem set?
+
+\null\hfill -- Edsger Dijkstra
+
+** DONE DDD Übung 1 (Contacts -- ex 2)
+CLOSED: [2025-04-02 Wed 14:29]
+
+A Contact has
+
+- a personal name 
+- an optional email address 
+- an optional postal address 
+- Rule: a contact must have an email or a postal address 
+
+A Personal Name consists of a first name, middle initial, last name
+
+- Rule: the first name and last name are required 
+- Rule: the middle initial is optional 
+- Rule: the first name and last name must not be more than 50 chars 
+- Rule: the middle initial is exactly 1 char, if present 
+
+A postal address consists of a four address fields plus a country
+
+- Rule: An Email Address can be verified or unverified
+
+** DONE DDD Übung 2 (Payments -- ex 3)
+CLOSED: [2025-04-02 Wed 14:29]
+
+The payment taking system should accept:
+
+- Cash
+- Credit cards
+- Cheques
+- Paypal
+- Bitcoin
+
+A payment consists of a:
+
+- payment
+- non-negative amount
+
+After designing the types, create functions that will:
+
+- print a payment method
+- print a payment, including the amount
+- create a new payment from an amount and method
+
+** DONE DDD Übung 3 (Refactoring -- ex 4)
+CLOSED: [2025-04-02 Wed 14:29]
+
+Much C# code has implicit states that you can recognize by fields called "IsSomething", or nullable date.
+
+This is a sign that states transitions are present but not being modelled properly.
+
+** DONE DDD Übung 4 (Shopping Cart -- fsm ex 3)
+CLOSED: [2025-04-02 Wed 14:29]
+
+Create types that model an e-commerce shopping cart.
+
+- Rule: "You can't remove an item from an empty cart"!
+- Rule: "You can't change a paid cart"!
+- Rule: "You can't pay for a cart twice"!
+
+States are:
+- Empty  
+- ActiveCartData  
+- PaidCartData  
+  
+** DONE Pause
+CLOSED: [2025-04-02 Wed 14:29]
+*** 
+    :PROPERTIES:
+    :BEAMER_env: block
+    :END:
+
+About the use of language: it is impossible to sharpen a pencil with a blunt axe. 
+It is equally vain to try to do it with ten blunt axes instead.
+
+\null\hfill -- Edsger Dijkstra
+
+* Property Based Testing [7/7]
+** DONE Example Based Tests :)
+CLOSED: [2025-04-02 Wed 14:29]
+
+#+begin_src fsharp :results output :exports none
+open System
+#r "../src/4/02_PBT/lib/Expecto.dll"
+open Expecto
+let expectoConfig = {defaultConfig with colour = Expecto.Logging.ColourLevel.Colour0}
+#load "../src/4/02_PBT/A1_Add_Implementations.fsx"
+open A1_Add_Implementations
+#+end_src
+
+#+RESULTS:
+
+#+begin_src fsharp :results value :exports both :eval no
+module Test1 =
+    open Implementation1
+    let tests = testList "implementation 1" [
+        test "add 1 3 = 4" {
+            let actual = add 1 3
+            let expected = 4
+            Expect.equal expected actual "" }
+        test "add 2 2 = 4" {
+            let actual = add 2 2
+            let expected = 4
+            Expect.equal expected actual "" } ];;
+runTests expectoConfig Test1.tests
+#+end_src
+
+#+RESULTS:
+: runTests expectoConfig Test1.tests;;
+: Expecto Running...
+: [14:51:49 INF] EXPECTO? Running tests... <Expecto>
+: [14:51:49 INF] EXPECTO! 2 tests run in 00:00:00.0366264 for implementation 1 – 2 passed, 0 ignored, 0 failed, 0 errored. Success! <Expecto>
+: val it: int = 0
+
+** DONE Evil Developer From Hell :(
+CLOSED: [2025-04-02 Wed 14:30]
+
+#+begin_src fsharp :results value :exports both
+module Implementation1 =
+    let add x y =
+        4
+#+end_src
+
+#+RESULTS:
+: module Implementation1 =
+:   val add: x: 'a -> y: 'b -> int
+
+** DONE PBT
+CLOSED: [2025-04-02 Wed 14:30]
+
+$\leadsto$ [[./4.2 An introduction to property based testing.pdf][Property Based Testing]]
+
+\null\hfill--Scott Wlashin: [[https://fsharpforfunandprofit.com/series/property-based-testing/][F# for Fun and Profit]]
+
+** DONE FsCheck
+CLOSED: [2025-04-02 Wed 14:30]
+
+#+begin_src fsharp :results output :exports none
+open System
+#r "../src/4/02_PBT/lib/FsCheck.dll"
+#+end_src
+
+#+RESULTS:
+
+#+begin_src fsharp :results value :exports both
+let add1 x y = x + y
+let add2 x y = x - y
+let commutativeProperty f x y =
+   let result1 = f x y
+   let result2 = f y x
+   result1 = result2;;
+FsCheck.Check.Quick (commutativeProperty add1)
+FsCheck.Check.Quick (commutativeProperty add2)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+FsCheck.Check.Quick (commutativeProperty add1)
+FsCheck.Check.Quick (commutativeProperty add2);;
+Ok, passed 100 tests.
+Falsifiable, after 1 test (3 shrinks) (StdGen (1916668567, 297460728)):
+Original:
+-1
+2
+Shrunk:
+0
+1
+val it: unit = ()
+#+end_example
+
+** DONE FsCheck (Generate)
+CLOSED: [2025-04-02 Wed 14:30]
+
+#+begin_src fsharp :results value :exports both
+type Temp = F of int | C of float;;
+let fGen =
+    FsCheck.Gen.choose(32,212)
+    |> FsCheck.Gen.map (fun i -> F i);;
+let cGen =
+    FsCheck.Gen.choose(0,100)
+    |> FsCheck.Gen.map (fun i -> C (float i));;
+let tempGen =
+    FsCheck.Gen.oneof [fGen; cGen]
+
+let test = tempGen |> FsCheck.Gen.sample 0 20
+test
+#+end_src
+
+#+RESULTS:
+#+begin_example
+let tempGen =
+    FsCheck.Gen.oneof [fGen; cGen]
+
+let test = tempGen |> FsCheck.Gen.sample 0 20
+test;;
+val tempGen: FsCheck.Gen<Temp> = Gen <fun:Bind@88>
+val test: Temp list =
+  [F 83; F 91; F 68; F 36; C 60.0; C 50.0; C 70.0; C 60.0; F 84; F 52; F 210;
+   F 178; C 100.0; C 90.0; C 71.0; F 39; C 78.0; C 56.0; C 86.0; C 74.0]
+val it: Temp list =
+  [F 83; F 91; F 68; F 36; C 60.0; C 50.0; C 70.0; C 60.0; F 84; F 52; F 210;
+   F 178; C 100.0; C 90.0; C 71.0; F 39; C 78.0; C 56.0; C 86.0; C 74.0]
+#+end_example
+
+** DONE FsCheck (Shrink)
+CLOSED: [2025-04-02 Wed 14:30]
+
+#+begin_src fsharp :results value :exports both
+open FsCheck
+let smallerThan81Property x = x < 81
+FsCheck.Check.Quick smallerThan81Property
+
+let test1 = FsCheck.Arb.shrink 100 |> Seq.toList
+let test2 = FsCheck.Arb.shrink 88 |> Seq.toList
+test2
+#+end_src
+
+#+RESULTS:
+: Falsifiable, after 89 tests (2 shrinks) (StdGen (2110673557, 297460728)):
+: Original:
+: 85
+: Shrunk:
+: 81
+: val smallerThan81Property: x: int -> bool
+: val test1: int list = [0; 50; 75; 88; 94; 97; 99]
+: val test2: int list = [0; 44; 66; 77; 83; 86; 87]
+: val it: int list = [0; 44; 66; 77; 83; 86; 87]
+
+** DONE Auswahl der Eigenschaften
+CLOSED: [2025-04-02 Wed 14:30]
+
+- Unterschiedlicher Weg, gleiches Ziel (Map(f)(Option(x))=Option(f x))
+- Hin und Her (z.B. Reverse einer Liste)
+- Invarianten (z.B. Länge einer Liste bei Sortierung)
+- Idempotenz (noch einmal bringt nichts mehr)
+- Divide et Impera! (teile und herrsche)
+- Hard to prove, easy to verify (Primzahlzerlegung)
+- Test-Orakel (z.B. einfach aber langsam)
+
+* Ende [3/3]
+** DONE Zusammenfassung
+CLOSED: [2025-04-02 Wed 14:30]
+
+- funktionales Domain Modeling (DDD)
+- eigenschaftsbasiertes Testen (Property Based Testing)
+
+** DONE Links
+CLOSED: [2025-04-02 Wed 14:30]
+
+- [[https://fsharpforfunandprofit.com/ddd/][Domain Driven Design]]
+- [[https://fsharpforfunandprofit.com/books/][Domain Modeling Made Functional]]
+- [[https://github.com/fscheck/FsCheck][FsCheck]]
+- [[https://fsharpforfunandprofit.com/posts/property-based-testing/][An introduction to property-based testing]]
+- [[https://fsharpforfunandprofit.com/posts/property-based-testing-2/][Choosing properties for property-based testing]]
+
+
+** DONE Hausaufgabe  (Erinnerung)
+CLOSED: [2025-04-01 Tue 22:05]
+
+- exercism.io (bis 07.04)
+  - [ ] Accumulate
+  - [ ] Space Age
+- exercism.io (bis 07.04)
+  - [ ] Poker (Programmieraufgabe)
+
+** DONE Termine
+CLOSED: [2025-03-24 Mon 19:18]
+
+- [X] 12.03 11:30 - 15:45
+- [X] 26.03 11:30 - 15:45 (online)
+- [X] 02.04  8:45 - 11:45 (online)
+- [X] 04.04 13:00 - 17:15 (online)
+- [ ] 09.04 11:30 - 15:45
+
+  
+* Sample                                                           :noexport:
+ 
+** Frame 1
+
+*** Thanks to Eric Fraga :B_block:BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:BEAMER_ENV: block
+:END:
+
+for the first viable Beamer setup in Org
+
+*** Thanks to everyone else :B_block:BMCOL:
+:PROPERTIES:
+:BEAMER_COL: 0.48
+:BEAMER_ACT: <2->
+:BEAMER_ENV: block
+:END:
+
+for contributing to the discussion
+
